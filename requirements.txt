@@ -1,0 +1,5 @@
+streamlit
+sentence-transformers
+openai>=1.3.7
+pinecone
+pandas
