@@ -10,7 +10,7 @@ from openai import RateLimitError
 # Load API keys from Streamlit secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 PINECONE_API_KEY = st.secrets["PINECONE_API_KEY"]
-  PINECONE_INDEX_NAME = st.secrets.get("PINECONE_INDEX_NAME", "your-index-name")
+PINECONE_INDEX_NAME = st.secrets.get("PINECONE_INDEX_NAME", "your-index-name")
 
 
 # Validate keys 
