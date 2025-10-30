@@ -96,8 +96,7 @@ def generate_response_with_citations(query, matches):
 
     for i in range(0, len(matches), batch_size):
         batch = matches[i:i+batch_size]
-        summaries.append(summarize_batch(batch))
-        time.sleep(1.5)  
+        summaries.append(summarize_batch(batch)) 
         for match in batch:
             citations.append(format_citation(match["metadata"]))
 
