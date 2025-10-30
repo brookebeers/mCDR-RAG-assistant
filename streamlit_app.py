@@ -36,30 +36,20 @@ def format_citation(meta):
     if isinstance(authors, str):
         authors = [a.strip() for a in authors.split(";")]
 
-   
-    formatted_authors = []
-    for author in authors:
-        parts = author.split()
-        if len(parts) >= 2:
-            last = parts[-1]
-            initials = " ".join([f"{p[0]}." for p in parts[:-1]])
-            formatted_authors.append(f"{last}, {initials}")
-        else:
-            formatted_authors.append(author)
-
-    author_str = ", ".join(formatted_authors)
+    author_str = ", ".join(authors)
     year = meta.get("publication_year", "n.d.")
     title = meta.get("title", "Untitled")
-    source = meta.get("source", "") 
+    source = meta.get("source", "")  
     doi = meta.get("doi", "")        
 
     citation = f"{author_str} ({year}). {title}."
     if source:
         citation += f" {source}."
-    if doi:
+    if doi and doi.lower() != "na":
         citation += f" https://doi.org/{doi}"
 
     return citation
+
 
 
 def truncate(text, max_chars=3000):
