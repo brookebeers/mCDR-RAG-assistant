@@ -22,7 +22,6 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
 # Initialize clients
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-model = load_model()
 
 index = pc.Index(name=PINECONE_INDEX_NAME)
 client = OpenAI(api_key=OPENAI_API_KEY)
