@@ -1,8 +1,9 @@
 import os
-import time
+import time 
 import streamlit as st
-from pinecone import Pinecone, ServerlessSpec
-from openai import OpenAI
+from sentence_transformers import SentenceTransformer
+from pinecone import Pinecone 
+from openai import OpenAI 
 from openai import RateLimitError
 
 
@@ -17,27 +18,9 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
     st.error("Missing API keys. Please set them in Streamlit's Secrets Manager.")
     
 
-pc = Pinecone(api_key=PINECONE_API_KEY)
-
-index_info = pc.describe_index(PINECONE_INDEX_NAME)
-if index_info.dimension != 1536:
-    st.warning(f"Index '{PINECONE_INDEX_NAME}' has wrong dimension ({index_info.dimension}). Recreating with dimension=1536...")
-    pc.delete_index(PINECONE_INDEX_NAME)
-    pc.create_index(
-        name=PINECONE_INDEX_NAME,
-        dimension=1536,
-        metric="cosine",
-        spec=ServerlessSpec(
-            cloud="aws",
-            region="us-west-2"
-        )
-    )
-
-index = pc.Index(PINECONE_INDEX_NAME)
-
-
-
-# Initialize clients
+model = SentenceTransformer('all-MiniLM-L6-v2')
+pc = Pinecone(api_key=PINECONE_API_KEY) 
+index = pc.Index(name=PINECONE_INDEX_NAME) 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Core Functions 
