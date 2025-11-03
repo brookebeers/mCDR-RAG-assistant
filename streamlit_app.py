@@ -25,13 +25,10 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Core Functions 
 def retrieve_relevant_chunks(query, top_k=30):
-    embedding_response = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=query
-    )
-    query_embedding = embedding_response.data[0].embedding
+    query_embedding = model.encode(query).tolist()
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
     return results["matches"]
+
 
 
 def format_citation(meta):
@@ -185,4 +182,4 @@ if query:
                     st.markdown(review)
 
 st.markdown("---")
-st.caption("Built by Brooke Beers using GPT-4, Pinecone, and OpenAI embeddings.")
+st.caption("Built by Brooke Beers using GPT-4, Pinecone, and SentenceTransformers.")
