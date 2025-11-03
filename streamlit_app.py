@@ -19,7 +19,10 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
 
 pc = Pinecone(api_key=PINECONE_API_KEY)
 
-if PINECONE_INDEX_NAME not in pc.list_indexes().names():
+index_info = pc.describe_index(PINECONE_INDEX_NAME)
+if index_info.dimension != 1536:
+    st.warning(f"Index '{PINECONE_INDEX_NAME}' has wrong dimension ({index_info.dimension}). Recreating with dimension=1536...")
+    pc.delete_index(PINECONE_INDEX_NAME)
     pc.create_index(
         name=PINECONE_INDEX_NAME,
         dimension=1536,
