@@ -1,7 +1,7 @@
 import os
 import time
 import streamlit as st
-from pinecon import Pinecone
+from pinecone import Pinecone
 from openai import OpenAI
 from openai import RateLimitError
 
