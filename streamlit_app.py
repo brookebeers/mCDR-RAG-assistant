@@ -1,9 +1,9 @@
 import os
-import time 
+import time
 import streamlit as st
 from sentence_transformers import SentenceTransformer
-from pinecone import Pinecone 
-from openai import OpenAI 
+from pinecone import Pinecone
+from openai import OpenAI
 from openai import RateLimitError
 
 
@@ -16,11 +16,13 @@ PINECONE_INDEX_NAME = st.secrets.get("PINECONE_INDEX_NAME", "your-index-name")
 # Validate keys 
 if not OPENAI_API_KEY or not PINECONE_API_KEY:
     st.error("Missing API keys. Please set them in Streamlit's Secrets Manager.")
-    
 
+
+
+# Initialize clients
 model = SentenceTransformer('all-MiniLM-L6-v2')
-pc = Pinecone(api_key=PINECONE_API_KEY) 
-index = pc.Index(name=PINECONE_INDEX_NAME) 
+pc = Pinecone(api_key=PINECONE_API_KEY)
+index = pc.Index(name=PINECONE_INDEX_NAME)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Core Functions 
@@ -28,8 +30,6 @@ def retrieve_relevant_chunks(query, top_k=30):
     query_embedding = model.encode(query).tolist()
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
     return results["matches"]
-
-
 
 def format_citation(meta):
     authors = meta.get("author", "Unknown")
@@ -104,12 +104,9 @@ def generate_response_with_citations(query, matches):
 
     for i in range(0, len(matches), batch_size):
         batch = matches[i:i+batch_size]
-        summary = summarize_batch(batch)
-        summaries.append(summary)
-        st.markdown(f"**Batch {i//batch_size + 1} summary:**\n{summary}")
+        summaries.append(summarize_batch(batch)) 
         for match in batch:
             citations.append(format_citation(match["metadata"]))
-
 
     if not any(summaries):
         st.error("Summarization failed. Please try again or check your API quota.")
@@ -118,7 +115,7 @@ def generate_response_with_citations(query, matches):
     final_prompt = build_final_prompt(query, summaries)
 
     final_response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[{"role": "user", "content": final_prompt}]
     )
 
@@ -182,4 +179,4 @@ if query:
                     st.markdown(review)
 
 st.markdown("---")
-st.caption("Built by Brooke Beers using GPT-4, Pinecone, and SentenceTransformers.")
+st.caption("Built by Brooke Beers using GPT-4, Pinecone, and SentenceTransformers. Data sourced from ICES mCDR database.")
