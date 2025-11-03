@@ -2,7 +2,7 @@ import os
 import time
 import streamlit as st
 from sentence_transformers import SentenceTransformer
-import pinecone
+from pinecone import Pinecone
 from openai import OpenAI
 from openai import RateLimitError
 
