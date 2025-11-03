@@ -21,7 +21,7 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
 
 # Initialize clients
 def load_model():
-    return SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
+    return SentenceTransformer('all-MiniLM-L6-v2')
 
 model = load_model()
 
