@@ -1,8 +1,7 @@
 import os
 import time
 import streamlit as st
-from sentence_transformers import SentenceTransformer
-from pinecone import Pinecone
+import pinecone
 from openai import OpenAI
 from openai import RateLimitError
 
@@ -20,17 +19,20 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
 
 
 # Initialize clients
-model = SentenceTransformer('all-MiniLM-L6-v2')
-
-
-index = pc.Index(name=PINECONE_INDEX_NAME)
+pinecone.init(api_key=PINECONE_API_KEY)
+index = pinecone.Index(name=PINECONE_INDEX_NAME)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Core Functions 
 def retrieve_relevant_chunks(query, top_k=30):
-    query_embedding = model.encode(query).tolist()
+    embedding_response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=query
+    )
+    query_embedding = embedding_response.data[0].embedding
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
     return results["matches"]
+
 
 def format_citation(meta):
     authors = meta.get("author", "Unknown")
@@ -183,4 +185,4 @@ if query:
                     st.markdown(review)
 
 st.markdown("---")
-st.caption("Built by Brooke Beers using GPT-4, Pinecone, and SentenceTransformers. Data sourced from ICES mCDR database.")
+st.caption("Built by Brooke Beers using GPT-4, Pinecone, and OpenAI embeddings.")
