@@ -20,8 +20,11 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
 
 
 # Initialize clients
-model = SentenceTransformer('all-MiniLM-L6-v2')
-pc = Pinecone(api_key=PINECONE_API_KEY)
+def load_model():
+    return SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
+
+model = load_model()
+
 index = pc.Index(name=PINECONE_INDEX_NAME)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -104,9 +107,12 @@ def generate_response_with_citations(query, matches):
 
     for i in range(0, len(matches), batch_size):
         batch = matches[i:i+batch_size]
-        summaries.append(summarize_batch(batch)) 
+        summary = summarize_batch(batch)
+        summaries.append(summary)
+        st.markdown(f"**Batch {i//batch_size + 1} summary:**\n{summary}")
         for match in batch:
             citations.append(format_citation(match["metadata"]))
+
 
     if not any(summaries):
         st.error("Summarization failed. Please try again or check your API quota.")
@@ -115,7 +121,7 @@ def generate_response_with_citations(query, matches):
     final_prompt = build_final_prompt(query, summaries)
 
     final_response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": final_prompt}]
     )
 
