@@ -1,7 +1,7 @@
 import os
 import time
 import streamlit as st
-import pinecone
+from pinecon import Pinecone
 from openai import OpenAI
 from openai import RateLimitError
 
@@ -19,8 +19,8 @@ if not OPENAI_API_KEY or not PINECONE_API_KEY:
 
 
 # Initialize clients
-pinecone.init(api_key=PINECONE_API_KEY)
-index = pinecone.Index(name=PINECONE_INDEX_NAME)
+pc = Pinecone(api_key=PINECONE_API_KEY)
+index = pc.Index(PINECONE_INDEX_NAME)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Core Functions 
