@@ -78,6 +78,24 @@ Answer:"""
 
     st.error("Rate limit exceeded. Please try again later.")
     st.stop()
+    
+def build_final_prompt(query, summaries):
+    return f"""You are a scientific assistant tasked with synthesizing research on marine carbon dioxide removal (mCDR). Your goal is to produce a clear, well-structured answer that integrates insights from the provided summaries.
+
+Guidelines:
+- Use inline citations in the format (LastName, Year). If multiple authors are listed, use the first author's last name followed by 'et al.'.
+- Group insights into thematic sections (e.g., Technical Challenges, Ecological Impacts, Social Considerations, Monitoring & Validation).
+- Reference specific papers and authors wherever possible. Avoid vague phrases like "some studies" or "research shows".
+- If the summaries mention tools, frameworks, or strategies (e.g., Digital Twins of the Ocean, MRV systems), explain their role and limitations.
+- If there are more papers than could be processed, end with: "More papers available."
+
+Question:
+{query}
+
+Summaries:
+{'\n\n'.join(summaries)}
+
+Answer:"""
 
 def generate_response_with_citations(query, matches):
     batch_size = 5
@@ -90,15 +108,12 @@ def generate_response_with_citations(query, matches):
         for match in batch:
             citations.append(format_citation(match["metadata"]))
 
-    final_prompt = f"""You are a scientific assistant. Cite all information in line as [Author, Year]. 
-Go through all papers to form a full answer, 
-and state "More papers available" when there are more papers that you didn't have the memory to go through. 
-Based on the following summaries, synthesize a comprehensive answer to the question: {query}
+    if not any(summaries):
+        st.error("Summarization failed. Please try again or check your API quota.")
+        st.stop()
 
-Summaries:
-{'\n\n'.join(summaries)}
+    final_prompt = build_final_prompt(query, summaries)
 
-Answer:"""
     final_response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": final_prompt}]
@@ -107,7 +122,8 @@ Answer:"""
     unique_citations = sorted(set(citations))
     bibliography = "\n".join(f"{i+1}. {cite}" for i, cite in enumerate(unique_citations))
 
-    return final_response.choices[0].message.content + "\n\nBibliography:\n" + bibliography
+    return final_response.choices[0].message.content + "\n\nReferences:\n" + bibliography
+
 
 
 
