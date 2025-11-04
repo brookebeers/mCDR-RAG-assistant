@@ -80,14 +80,14 @@ Answer:"""
     st.stop()
     
 def build_final_prompt(query, summaries):
-    return f"""You are a scientific assistant tasked with synthesizing research on marine carbon dioxide removal (mCDR). Your goal is to produce a clear, well-structured answer that integrates insights from the provided summaries.
+    return f"""You are a scientific assistant tasked with synthesizing research on marine carbon dioxide removal (mCDR). Your goal is to produce a clear, well-structured, complete answer that integrates insights from the provided summaries.
 
 Guidelines:
 - Use inline citations in the format (LastName, Year). If multiple authors are listed, use the first author's last name followed by 'et al.'.
 - Group insights into thematic sections (e.g., Technical Challenges, Ecological Impacts, Social Considerations, Monitoring & Validation).
 - Reference specific papers and authors wherever possible. Avoid vague phrases like "some studies" or "research shows".
 - If the summaries mention tools, frameworks, or strategies (e.g., Digital Twins of the Ocean, MRV systems), explain their role and limitations.
-- If there are more papers than could be processed, end with: "More papers available."
+- If there are more papers than could be processed, end with: "Ask for more available papers." and allow a request that will provide those papers and answers.
 
 Question:
 {query}
