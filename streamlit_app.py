@@ -79,20 +79,16 @@ Answer:"""
     st.stop()
     
 def build_final_prompt(query, summaries):
-    return f"""You are a scientific assistant tasked with synthesizing research on marine carbon dioxide removal (mCDR). Your goal is to produce a clear, well-structured, complete answer that integrates insights from the provided summaries.
+    return f"""You are a scientific assistant tasked with synthesizing research on marine carbon dioxide removal (mCDR).
+Your goal is to produce a clear, well-structured, complete answer that integrates insights from the provided summaries.
 
-Given the user request, produce a thorough written draft incorporating all relevant passages from our RAG retrieval below.
-Now re-check the initial draft for any missing context from the retrieved text and revise.
-Provide a final cohesive version for the user.
+Requirements:
+- Provide a synthesis that is specific enough for a scientist to use in research planning.
+- Highlight quantitative findings (e.g., CO2 removal rates, energy requirements, ecological impacts) where available.
+- Discuss uncertainties, limitations, and methodological gaps explicitly.
 - Use inline citations in the format (LastName, Year). If multiple authors are listed, use the first author's last name followed by 'et al.'.
-Indicate the list of sources used in a bibliography format at the end
-
-
-- Reference specific papers and authors wherever possible. Use quotations and specific numbers, values, or data from the papers when applicable.
-- If the summaries mention tools, frameworks, or strategies (e.g., Digital Twins of the Ocean, MRV systems), explain their role and limitations.
-- Do not use placeholders like "Assistant's results" or "Third Summary." If metadata is incomplete (e.g., missing author or year), do not write "Unknown (n.d.)". Instead, omit the citation or use the title
-- If there are more papers than could be processed, end with: "Ask for more available papers." and allow a request that will provide those papers and answers.
-
+- Do not invent placeholders like "Assistant's results" or "Third Summary."
+- Do not generate a bibliography inside the answer; the system will append one automatically.
 Question:
 {query}
 
