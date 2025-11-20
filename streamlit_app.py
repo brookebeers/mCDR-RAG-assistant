@@ -84,7 +84,7 @@ Your goal is to produce a clear, well-structured, complete answer that integrate
 
 Requirements:
 - Provide a synthesis that is specific enough for a scientist to use in research planning.
-- Highlight quantitative findings (e.g., CO2 removal rates, energy requirements, ecological impacts) where available.
+- Extract quantitative findings (e.g., CO2 removal rates, energy requirements, ecological impacts) and include in response.
 - Discuss uncertainties, limitations, and methodological gaps explicitly.
 - Use inline citations in the format (LastName, Year). If multiple authors are listed, use the first author's last name followed by 'et al.'.
 - Do not invent placeholders like "Assistant's results" or "Third Summary."
