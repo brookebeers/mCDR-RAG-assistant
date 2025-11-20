@@ -32,23 +32,13 @@ def retrieve_relevant_chunks(query, top_k=30):
     return results["matches"]
 
 def format_citation(meta):
-    authors = meta.get("author", "Unknown")
-    if isinstance(authors, str):
-        authors = [a.strip() for a in authors.split(";")]
-
-    author_str = ", ".join(authors)
-    year = meta.get("publication_year", "n.d.")
-    title = meta.get("title", "Untitled")
-    source = meta.get("source", "")  
-    doi = meta.get("doi", "")        
-
-    citation = f"{author_str} ({year}). {title}."
-    if source:
-        citation += f" {source}."
-    if doi and doi.lower() != "na":
-        citation += f" https://doi.org/{doi}"
-
-    return citation
+    """Format metadata into a clean in-text citation string."""
+    author = meta.get("authors", "Unknown")
+    year = meta.get("year", "n.d.")
+    title = meta.get("title", "")
+    journal = meta.get("journal", "")
+    doi = meta.get("doi", "")
+    return f"{author} ({year}). {title}. {journal}. DOI: {doi}"
 
 
 
@@ -56,8 +46,16 @@ def truncate(text, max_chars=3000):
     return text[:max_chars]
 
 def summarize_batch(batch, max_retries=3):
-    context = "\n\n".join(truncate(m["metadata"]["text"]) for m in batch if "text" in m["metadata"])
-    prompt = f"""You are a scientific assistant. Summarize key research gaps in mCDR based on the following context. Cite specific papers and authors where possible.
+    context_chunks = []
+    for m in batch:
+        if "text" in m["metadata"]:
+            citation = format_citation(m["metadata"])
+            text = truncate(m["metadata"]["text"])
+            context_chunks.append(f"{text}\n[Citation: {citation}]")
+    context = "\n\n".join(context_chunks)
+
+    prompt = f"""You are a scientific assistant. Summarize key research gaps in mCDR based on the following context. 
+Cite specific papers and authors where possible, using the inline format (LastName, Year).
 
 Context:
 {context}
@@ -82,11 +80,16 @@ Answer:"""
 def build_final_prompt(query, summaries):
     return f"""You are a scientific assistant tasked with synthesizing research on marine carbon dioxide removal (mCDR). Your goal is to produce a clear, well-structured, complete answer that integrates insights from the provided summaries.
 
-Guidelines:
+Given the user request, produce a thorough written draft incorporating all relevant passages from our RAG retrieval below.
+Now re-check the initial draft for any missing context from the retrieved text and revise.
+Provide a final cohesive version for the user.
 - Use inline citations in the format (LastName, Year). If multiple authors are listed, use the first author's last name followed by 'et al.'.
-- Group insights into thematic sections (e.g., Technical Challenges, Ecological Impacts, Social Considerations, Monitoring & Validation).
-- Reference specific papers and authors wherever possible. Avoid vague phrases like "some studies" or "research shows".
+Indicate the list of sources used in a bibliography format at the end
+
+
+- Reference specific papers and authors wherever possible. Use quotations and specific numbers, values, or data from the papers when applicable.
 - If the summaries mention tools, frameworks, or strategies (e.g., Digital Twins of the Ocean, MRV systems), explain their role and limitations.
+- Do not use placeholders like "Assistant's results" or "Third Summary."
 - If there are more papers than could be processed, end with: "Ask for more available papers." and allow a request that will provide those papers and answers.
 
 Question:
