@@ -33,12 +33,13 @@ def retrieve_relevant_chunks(query, top_k=30):
 
 def format_citation(meta):
     """Format metadata into a clean in-text citation string."""
-    author = meta.get("authors", "Unknown")
-    year = meta.get("year", "n.d.")
+    author = meta.get("author", "Unknown")  
+    year = meta.get("publication_year", "n.d.")  
     title = meta.get("title", "")
-    journal = meta.get("journal", "")
+    journal = meta.get("publication_title", "")
     doi = meta.get("doi", "")
     return f"{author} ({year}). {title}. {journal}. DOI: {doi}"
+
 
 
 
@@ -89,7 +90,7 @@ Indicate the list of sources used in a bibliography format at the end
 
 - Reference specific papers and authors wherever possible. Use quotations and specific numbers, values, or data from the papers when applicable.
 - If the summaries mention tools, frameworks, or strategies (e.g., Digital Twins of the Ocean, MRV systems), explain their role and limitations.
-- Do not use placeholders like "Assistant's results" or "Third Summary."
+- Do not use placeholders like "Assistant's results" or "Third Summary." If metadata is incomplete (e.g., missing author or year), do not write "Unknown (n.d.)". Instead, omit the citation or use the title
 - If there are more papers than could be processed, end with: "Ask for more available papers." and allow a request that will provide those papers and answers.
 
 Question:
