@@ -79,3 +79,12 @@ The Streamlit app (app.py) handles querying, summarization, synthesis, and hallu
 
 Token limits may restrict very large queries; adjust top_k or chunk size if needed.
 
+## References
+
+- Martineau, K. (2023). *Artificial intelligence and the risk of hallucination in large language models.*  
+- Mike HPG. (2023). [Creating a Custom GPT with RAG](https://medium.com/@mikehpg/creating-a-custom-gpt-with-rag-2441fcabe40f). Medium.  
+- Pradeep Varanasi. (2023). [rags_customGPT](https://github.com/pradeepvaranasi/rags_customGPT). GitHub repository.  
+- Microsoft Learn. (2023). [Azure Search + OpenAI demo](https://learn.microsoft.com/en-us/samples/azure-samples/azure-search-openai-demo/azure-search-openai-demo/).  
+- Baeldung. (2023). [How to Train ChatGPT on Custom Data: A RAG Application](https://www.baeldung.com/cs/chatgpt-rag).  
+- Firecrawl. (2023). [15 Best Open-Source RAG Frameworks](https://www.firecrawl.dev/blog/best-open-source-rag-frameworks).  
+
