@@ -179,4 +179,4 @@ if query:
                     st.markdown(review)
 
 st.markdown("---")
-st.caption("Built by Brooke Beers using GPT-4, Pinecone, and SentenceTransformers. Data sourced from ICES mCDR database.")
+st.caption("Built by Brooke Beers using GPT-5, Pinecone, and SentenceTransformers. Data sourced from ICES mCDR database.")
